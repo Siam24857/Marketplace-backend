@@ -23,6 +23,18 @@ async function connectToMongoDB() {
     await client.connect();
     console.log("You successfully connected to MongoDB!");
     productCollection = database.collection("products");
+    // Create helpful indexes (idempotent).
+    try {
+      await productCollection.createIndex({ categorySlug: 1, isActive: 1 });
+      await productCollection.createIndex({ price: 1 });
+      await productCollection.createIndex({ createdAt: -1 });
+      await productCollection.createIndex({ rating: -1, reviewsCount: -1 });
+      await productCollection.createIndex({ sold: -1 });
+      await productCollection.createIndex({ discount: -1 });
+      await productCollection.createIndex({ title: 1 });
+    } catch (idxErr) {
+      console.warn("[indexes] ", idxErr.message);
+    }
   } catch (err) {
     console.dir(err);
   }
