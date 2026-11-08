@@ -120,6 +120,7 @@ function getSortSpec(sort) {
     case "oldest":
       return { createdAt: 1, _id: 1 };
     case "best-selling":
+    case "most-popular":
       return { sold: -1, rating: -1, _id: -1 };
     case "highest-rated":
       return { rating: -1, reviewsCount: -1, _id: -1 };
@@ -216,11 +217,20 @@ app.get("/products", async (req, res) => {
 
     return res.json({
       success: true,
+      products: items.map(serializeProduct),
       items: items.map(serializeProduct),
       total,
       page,
       limit,
       totalPages,
+      pagination: {
+        currentPage: page,
+        limit,
+        totalProducts: total,
+        totalPages,
+        hasNextPage: page * limit < total,
+        hasPreviousPage: page > 1,
+      },
       hasMore: page * limit < total,
       sort,
       search: search || "",
