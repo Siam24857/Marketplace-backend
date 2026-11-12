@@ -20,7 +20,7 @@ let productCollection = database.collection("products");
 
 async function connectToMongoDB() {
   try {
-    await client.connect();
+    await client.connect(); 
     console.log("You successfully connected to MongoDB!");
     productCollection = database.collection("products");
     // Create helpful indexes (idempotent).
